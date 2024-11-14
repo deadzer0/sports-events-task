@@ -23,7 +23,12 @@ git clone https://github.com/deadzer0/sports-events-task.git
 
 2. Navigate to the project directory:
 ```bash
-cd [project-directory]
+cd sports-events-task
+```
+
+3. Rename .env.example file to .env:
+```bash
+cp .env.example .env
 ```
 
 3. Start the Docker containers:
