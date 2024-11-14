@@ -12,16 +12,16 @@ class SeasonSeeder extends Seeder
 {
     public function run(): void
     {
-        // Взимаме всички турнири
+        // Get all Tournaments
         $tournaments = Tournament::all();
 
-        // За всеки турнир създаваме по един сезон 2024/2025
+        // Create one season 2024/2025 for each tournament
         foreach ($tournaments as $tournament) {
             Season::create([
                 'tournament_id' => $tournament->id,
                 'name' => '2024/2025',
-                'start_date' => Carbon::create(2024, 8, 1),  // 1 Август 2024
-                'end_date' => Carbon::create(2025, 5, 31),   // 31 Май 2025
+                'start_date' => Carbon::create(2024, 8, 1),  // 1 August 2024
+                'end_date' => Carbon::create(2025, 5, 31),   // 31 May 2025
                 'status' => 'active'
             ]);
         }

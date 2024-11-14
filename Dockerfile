@@ -1,6 +1,6 @@
 FROM php:8.3-apache
 
-# Инсталиране на системни зависимости
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -11,34 +11,34 @@ RUN apt-get update && apt-get install -y \
     unzip \
     netcat-traditional
 
-# Активиране на Apache mod_rewrite
+# Enable Apache mod_rewrite
 RUN a2enmod rewrite
 
-# Инсталиране на PHP разширения
+# Install PHP extensions
 RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
 
-# Инсталиране на Composer
+# Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Копиране на Laravel проекта
+# Copy Laravel project
 COPY . /var/www/html/
 
-# Настройване на Apache DocumentRoot
+# Configure Apache DocumentRoot
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
-# Настройване на права
+# Set permissions
 RUN chown -R www-data:www-data /var/www/html
 RUN chmod -R 775 /var/www/html/storage
 RUN chmod -R 775 /var/www/html/bootstrap/cache
 
-# Работна директория
+# Working directory
 WORKDIR /var/www/html
 
-# Копиране и настройване на entrypoint скрипта
+# Copy and setup entrypoint script
 COPY docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-# Уверяваме се, че PHP процесите ще се изпълняват като www-data
+# Ensure PHP processes run as www-data
 USER www-data

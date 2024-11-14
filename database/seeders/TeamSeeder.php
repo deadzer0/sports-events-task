@@ -11,7 +11,7 @@ class TeamSeeder extends Seeder
     public function run(): void
     {
         $teams = [
-            // Premier League отбори
+            // Premier League teams
             [
                 'name' => 'Manchester United',
                 'city' => 'Manchester',
@@ -32,7 +32,7 @@ class TeamSeeder extends Seeder
                 'city' => 'London',
                 'country' => 'England',
             ],
-            // La Liga отбори
+            // La Liga teams
             [
                 'name' => 'Barcelona',
                 'city' => 'Barcelona',

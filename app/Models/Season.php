@@ -35,7 +35,7 @@ class Season extends Model
         return $this->hasMany(Game::class);
     }
 
-    // Helper метод за активни сезони
+    // Helper method for active seasons
     public function scopeActive($query)
     {
         return $query->where('status', 'active');

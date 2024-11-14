@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('seasons', function (Blueprint $table) {
             $table->id();
             $table->foreignId('tournament_id')->constrained()->onDelete('cascade');
-            $table->string('name');  // например "2024/2025"
+            $table->string('name');  // for example "2024/2025"
             $table->date('start_date');
             $table->date('end_date');
             $table->enum('status', ['upcoming', 'active', 'completed'])->default('upcoming');

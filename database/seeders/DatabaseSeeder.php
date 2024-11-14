@@ -21,10 +21,10 @@ class DatabaseSeeder extends Seeder
 //        ]);
 
         $this->call([
-            TeamSeeder::class,        // първо отбори
-            TournamentSeeder::class,  // после турнири
-            SeasonSeeder::class,      // после сезони
-            GameSeeder::class         // накрая мачове и резултати
+            TeamSeeder::class,        // Teams first
+            TournamentSeeder::class,  // Then tournaments
+            SeasonSeeder::class,      // Then seasons
+            GameSeeder::class         // Then games and results
         ]);
     }
 }

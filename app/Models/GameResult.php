@@ -27,19 +27,19 @@ class GameResult extends Model
         return $this->belongsTo(Game::class);
     }
 
-    // Проверка дали мача е равен
+    // Check if the game is a draw
     public function isDraw(): bool
     {
         return $this->home_team_score === $this->away_team_score;
     }
 
-    // Вземане на резултата като стринг (пример: "4:2")
+    // Get result as string (for example: "4:2")
     public function getScoreAttribute(): string
     {
         return "{$this->home_team_score}:{$this->away_team_score}";
     }
 
-    // Определяне на победителя (връща 'home', 'away' или null при равен)
+    // Determine the winner (returns 'home', 'away' or null for a draw)
     public function getWinnerAttribute(): ?string
     {
         if ($this->isDraw()) {
@@ -48,7 +48,7 @@ class GameResult extends Model
         return $this->home_team_score > $this->away_team_score ? 'home' : 'away';
     }
 
-    // Взема победителя като отбор (Team модел)
+    // Get the winner as team (Team model)
     public function getWinningTeamAttribute(): ?Team
     {
         if ($this->isDraw()) {

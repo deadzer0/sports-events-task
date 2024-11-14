@@ -23,7 +23,7 @@ class SportDataController extends Controller
 
         return response()->json([
             'data' => $tournaments,
-            'timestamp' => now()  // за да знаем кога са опреснени данните
+            'timestamp' => now()
         ]);
     }
 }

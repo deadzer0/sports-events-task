@@ -5,7 +5,7 @@
 @section('content')
     <h1>Sports Events</h1>
     <div id="sportsData">
-        <!-- Тук ще се зареждат данните динамично -->
+        <!-- Load data dynamic -->
     </div>
     <div class="last-update" id="lastUpdate"></div>
 @endsection
@@ -21,7 +21,7 @@
         }
 
         function fetchData() {
-            // Добавяме fade-out ефект
+            // Adding fade-out effect
             document.getElementById('sportsData').style.opacity = '0.5';
             document.getElementById('sportsData').style.transition = 'opacity 0.3s';
 
@@ -29,10 +29,10 @@
                 .then(response => response.json())
                 .then(data => {
                     const sportsDataDiv = document.getElementById('sportsData');
-                    sportsDataDiv.innerHTML = ''; // Изчистваме предишното съдържание
+                    sportsDataDiv.innerHTML = ''; // clean prev content
 
                     data.data.forEach(tournament => {
-                        // Разбъркваме мачовете за всеки сезон
+                        // Shuffle/randomize season matches
                         tournament.seasons.forEach(season => {
                             season.games = shuffleArray([...season.games]);
                         });
@@ -100,10 +100,10 @@
    `;
         document.head.appendChild(style);
 
-        // Първоначално зареждане
+        // Initial loading data
         fetchData();
 
-        // Опресняване на всяка минута
+        // Refresh every minute
         setInterval(fetchData, 60000);
     </script>
 @endsection

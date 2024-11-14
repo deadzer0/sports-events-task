@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('game_id')->constrained()->onDelete('cascade');
             $table->integer('home_team_score')->default(0);
             $table->integer('away_team_score')->default(0);
-            $table->json('additional_stats')->nullable();  // допълнителна статистика
+            $table->json('additional_stats')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

@@ -29,14 +29,14 @@ class Team extends Model
         return $this->hasMany(Game::class, 'away_team_id');
     }
 
-    // Метод за взимане на всички мачове (домакин + гост)
+    // Method for getting all matches (home + away)
     public function allGames(): Builder
     {
         return Game::where('home_team_id', $this->id)
             ->orWhere('away_team_id', $this->id);
     }
 
-    // Getter за пълното име на отбора (Град + Име)
+    // Getter for full team name (City + Name)
     public function getFullNameAttribute(): string
     {
         return "{$this->city} {$this->name}";

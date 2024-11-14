@@ -18,10 +18,10 @@ class GameSeeder extends Seeder
         $now = Carbon::now();
 
         foreach ($seasons as $season) {
-            // Вземаме отборите според турнира
+            // Gets teams filtered by tournament
             $teams = $this->getTeamsForTournament($season->tournament_id);
 
-            // 2 completed мача (минали)
+            // 2 completed games (completed)
             for ($i = 0; $i < 2; $i++) {
                 $this->createGame(
                     $season,
@@ -31,7 +31,7 @@ class GameSeeder extends Seeder
                 );
             }
 
-            // 1 мач in_progress (днешен)
+            // 1 game in progress (today)
             $this->createGame(
                 $season,
                 $teams,
@@ -39,7 +39,7 @@ class GameSeeder extends Seeder
                 'in_progress'
             );
 
-            // 2 scheduled мача (бъдещи)
+            // 2 scheduled games (upcoming)
             for ($i = 0; $i < 2; $i++) {
                 $this->createGame(
                     $season,
@@ -60,11 +60,11 @@ class GameSeeder extends Seeder
 
     private function createGame($season, $teams, $startTime, $status)
     {
-        // Избираме различни отбори за домакин и гост от същата лига
+        // Select different teams (home/away) from same league
         $homeTeam = $teams->random();
         $awayTeam = $teams->where('id', '!=', $homeTeam->id)->random();
 
-        // Нагласяме времето да е в разумен час (например между 19:00 и 21:45)
+        // Set time to reasonable hours (between 19:00 and 21:45)
         $startTime = $startTime->setHour(rand(19, 21))->setMinute(rand(0, 45))->setSecond(0);
 
         $game = Game::create([
@@ -77,7 +77,7 @@ class GameSeeder extends Seeder
             'venue' => $homeTeam->name . ' Stadium'
         ]);
 
-        // Създаваме резултат в зависимост от статуса
+        // Create score based on status
         if ($status === 'completed') {
             GameResult::create([
                 'game_id' => $game->id,
