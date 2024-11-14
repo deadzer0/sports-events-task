@@ -1,0 +1,53 @@
+services:
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: sports_laravel_app
+        volumes:
+            - .:/var/www/html
+        ports:
+            - "8000:80"
+        networks:
+            - sports_network
+        depends_on:
+            - db
+        entrypoint: [ "/var/www/html/docker-entrypoint.sh" ]
+        environment:
+            DB_CONNECTION: mysql
+            DB_HOST: db
+            DB_PORT: 3306
+            DB_DATABASE: laravel
+            DB_USERNAME: root
+            DB_PASSWORD: 123456
+
+    db:
+        image: mariadb:10.5
+        container_name: sports_mariadb
+        environment:
+            MARIADB_DATABASE: laravel
+            MARIADB_ROOT_PASSWORD: 123456
+        volumes:
+            - mysql_data:/var/lib/mysql
+        networks:
+            - sports_network
+
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        container_name: sports_phpmyadmin
+        environment:
+            PMA_HOST: db
+            MYSQL_ROOT_PASSWORD: 123456
+        ports:
+            - "8081:80"
+        depends_on:
+            - db
+        networks:
+            - sports_network
+networks:
+    sports_network:
+        name: sports_network
+        driver: bridge
+
+volumes:
+    mysql_data:
