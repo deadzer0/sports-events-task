@@ -1,3 +1,5 @@
+![Project Screenshot](https://i.ibb.co/HDDPLDk/Screenshot-from-2024-11-14-12-53-18.png)
+
 # Sports Events Task
 
 ## About The Task
