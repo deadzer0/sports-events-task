@@ -66,7 +66,7 @@
                                        <td>${game.game_result ?
                                 `${game.game_result.home_team_score} - ${game.game_result.away_team_score}`
                                 : '-'}</td>
-                                       <td><span class="status status-${game.status}">${game.status}</span></td>
+                                       <td><span class="status status-${game.status}">${game.status === 'in_progress' ? 'in progress' : game.status}</span></td>
                                        <td>${game.venue}</td>
                                    </tr>
                                `).join('')
