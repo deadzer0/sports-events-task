@@ -1,7 +1,5 @@
 @extends('layouts.app')
 
-@section('title', 'Sports Events Dashboard')
-
 @section('content')
     <h1>Sports Events</h1>
     <div id="sportsData">
@@ -10,7 +8,7 @@
     <div class="last-update" id="lastUpdate"></div>
 @endsection
 
-@section('scripts')
+@push('scripts')
     <script>
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
@@ -21,6 +19,7 @@
         }
 
         function fetchData() {
+            console.log('fetching')
             // Adding fade-out effect
             document.getElementById('sportsData').style.opacity = '0.5';
             document.getElementById('sportsData').style.transition = 'opacity 0.3s';
@@ -106,4 +105,4 @@
         // Refresh every minute
         setInterval(fetchData, 60000);
     </script>
-@endsection
+@endpush

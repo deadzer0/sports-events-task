@@ -1,30 +1,27 @@
 #!/bin/bash
 
-# Wait for database to be ready
-until nc -z -v -w30 db 3306
-do
-    echo "Waiting for database connection..."
-    sleep 5
-done
+# Изчакване на базата данни да бъде готова
+wait-for-it.sh db:3306 -t 30 -- echo "Database is up"
 
-# Install dependencies
+# Инсталиране на зависимостите
+git config --global --add safe.directory /var/www/html
 composer install
 
-# Generate key if not exists
+# Генериране на ключ, ако не съществува
 php artisan key:generate --no-interaction
 
-# Run migrations
+# Изпълнение на миграциите
 php artisan migrate --force
 
-# Run seeders if needed
-TABLES_COUNT=$(php artisan tinker --execute="return DB::table('tournaments')->count();")
+# Изпълнение на seeders, ако е необходимо
+TABLES_COUNT=$(php -r "require 'vendor/autoload.php'; echo \DB::table('tournaments')->count();")
 
-if [ "$TABLES_COUNT" -eq "0" ]; then
+if [ "$TABLES_COUNT" = "0" ]; then
     echo "Database is empty, seeding data..."
     php artisan db:seed --force
 else
     echo "Database already has data, skipping seed..."
 fi
 
-# Start Apache
+# Стартиране на Apache
 apache2-foreground

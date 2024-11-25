@@ -1,6 +1,10 @@
 FROM php:8.3-apache
 
-# Install system dependencies
+# Приемане на UID и GID като аргументи
+ARG UID=1000
+ARG GID=1000
+
+# Инсталиране на системни зависимости
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -9,36 +13,51 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     zip \
     unzip \
-    netcat-traditional
+    netcat-traditional \
+    librabbitmq-dev \
+    libssl-dev
 
-# Enable Apache mod_rewrite
+# Активиране на Apache mod_rewrite
 RUN a2enmod rewrite
 
-# Install PHP extensions
-RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
+# Задаване на ServerName, за да се премахне предупреждението
+RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
-# Install Composer
+# Инсталиране на PHP разширения
+RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd sockets
+
+# Инсталиране на AMQP разширението
+RUN pecl install amqp && \
+    docker-php-ext-enable amqp
+
+# Инсталиране на Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copy Laravel project
-COPY . /var/www/html/
+# Създаване на нова група и потребител с UID и GID от аргументите
+RUN groupadd -g ${GID} laravel && \
+    useradd -u ${UID} -g laravel -m laravel
 
-# Configure Apache DocumentRoot
+# Работна директория
+WORKDIR /var/www/html
+
+# Копиране на Laravel проекта
+COPY . /var/www/html
+
+# Настройка на правата
+RUN chown -R laravel:laravel /var/www/html
+
+# Конфигуриране на Apache DocumentRoot
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
-# Set permissions
-RUN chown -R www-data:www-data /var/www/html
-RUN chmod -R 775 /var/www/html/storage
-RUN chmod -R 775 /var/www/html/bootstrap/cache
+# Копиране на wait-for-it.sh
+COPY wait-for-it.sh /usr/local/bin/wait-for-it.sh
+RUN chmod +x /usr/local/bin/wait-for-it.sh
 
-# Working directory
-WORKDIR /var/www/html
-
-# Copy and setup entrypoint script
+# Копиране и настройка на entrypoint скрипта
 COPY docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-# Ensure PHP processes run as www-data
-USER www-data
+# Превключване към новия потребител
+USER laravel

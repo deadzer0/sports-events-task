@@ -3,16 +3,22 @@ services:
         build:
             context: .
             dockerfile: Dockerfile
+            args:
+                UID: "${UID}"
+                GID: "${GID}"
+        user: "${UID}:${GID}"
         container_name: sports_laravel_app
         volumes:
             - .:/var/www/html
         ports:
             - "8000:80"
+            - "6001:6001"  # за WebSocket
         networks:
             - sports_network
         depends_on:
             - db
-        entrypoint: [ "/var/www/html/docker-entrypoint.sh" ]
+            - rabbitmq
+        entrypoint: [ "/usr/local/bin/docker-entrypoint.sh" ]
         environment:
             DB_CONNECTION: mysql
             DB_HOST: db
@@ -20,6 +26,10 @@ services:
             DB_DATABASE: laravel
             DB_USERNAME: root
             DB_PASSWORD: 123456
+            RABBITMQ_HOST: rabbitmq
+            RABBITMQ_PORT: 5672
+            RABBITMQ_USER: guest
+            RABBITMQ_PASSWORD: guest
 
     db:
         image: mariadb:10.5
@@ -44,6 +54,21 @@ services:
             - db
         networks:
             - sports_network
+
+    rabbitmq:
+        image: rabbitmq:3-management
+        container_name: sports_rabbitmq
+        ports:
+            - "5672:5672"   # AMQP порт
+            - "15672:15672" # Management UI порт
+        environment:
+            RABBITMQ_DEFAULT_USER: guest
+            RABBITMQ_DEFAULT_PASS: guest
+        volumes:
+            - rabbitmq_data:/var/lib/rabbitmq
+        networks:
+            - sports_network
+
 networks:
     sports_network:
         name: sports_network
@@ -51,3 +76,6 @@ networks:
 
 volumes:
     mysql_data:
+        name: sports_mysql_data
+    rabbitmq_data:
+        name: sports_rabbitmq_data

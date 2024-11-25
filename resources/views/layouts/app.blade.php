@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Sports Events Task')</title>
+    <title>Sports Events Task</title>
     <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
-    @yield('styles')
+    @stack('styles')
 </head>
 <body>
 <div class="container">
     @yield('content')
 </div>
-@yield('scripts')
+@stack('scripts')
 </body>
 </html>
